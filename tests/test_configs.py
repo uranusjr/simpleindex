@@ -1,4 +1,5 @@
 import importlib.resources
+import pathlib
 
 import pytest
 
@@ -31,13 +32,13 @@ def test_configuration_parse(tmp_path):
     [
         (
             _Route(source=_RouteSource.path, to="./index/my-first-package"),
-            PathRoute(to="./index/my-first-package"),
+            PathRoute(root=pathlib.Path(), to="./index/my-first-package"),
         ),
         (
             _Route(source=_RouteSource.http, to="https://pypi.org/{project}/"),
-            HTTPRoute(to="https://pypi.org/{project}/"),
+            HTTPRoute(root=pathlib.Path(), to="https://pypi.org/{project}/"),
         ),
     ],
 )
 def test_route_derivation(conf, result):
-    assert conf.derive() == result
+    assert conf.derive(root=pathlib.Path()) == result

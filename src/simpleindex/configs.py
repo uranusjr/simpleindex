@@ -32,8 +32,8 @@ class _Route(pydantic.BaseModel):
     source: _RouteSource
     to: str
 
-    def derive(self) -> Route:
-        return self.source.value(to=self.to)
+    def derive(self, root: pathlib.Path) -> Route:
+        return self.source.value(root=root, to=self.to)
 
 
 class Configuration(pydantic.BaseModel):

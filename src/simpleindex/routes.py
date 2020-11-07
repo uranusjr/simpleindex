@@ -24,6 +24,7 @@ Params = typing.Mapping[str, typing.Any]
 
 @dataclasses.dataclass()
 class Route:
+    root: pathlib.Path
     to: str
 
     async def get(self, canonical_name: str, params: Params) -> Response:
@@ -63,7 +64,7 @@ def _iter_anchors(root: pathlib.Path, project: str) -> typing.Iterator[str]:
 @dataclasses.dataclass()
 class PathRoute(Route):
     async def get(self, canonical_name: str, params: Params) -> Response:
-        path = pathlib.Path(self.to.format(**params))
+        path = self.root.joinpath(self.to.format(**params))
         if path.is_file():
             return LocalResponse(status_code=200, text=path.read_text())
         if path.is_dir():

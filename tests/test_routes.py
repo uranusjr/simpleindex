@@ -1,3 +1,5 @@
+import pathlib
+
 import mousebender.simple
 import pytest
 
@@ -21,7 +23,7 @@ async def test_path_route_directory(tmp_path):
     for name in project_files:
         directory.joinpath(name).touch()
 
-    route = PathRoute(to=f"{directory.parent}/{{project}}")
+    route = PathRoute(root=tmp_path, to="{project}")
     resp = await route.get("my-package", {"project": "my-package"})
     assert resp.status_code == 200
 
@@ -36,7 +38,7 @@ async def test_path_route_file(tmp_path):
     html_file = tmp_path.joinpath("project.html")
     html_file.write_text("<body>test content</body>")
 
-    route = PathRoute(to=f"{html_file.parent}/{{project}}.html")
+    route = PathRoute(root=tmp_path, to="{project}.html")
     resp = await route.get("project", {"project": "project"})
     assert resp.status_code == 200
     assert resp.text == "<body>test content</body>"
@@ -46,7 +48,7 @@ async def test_path_route_file(tmp_path):
 async def test_path_route_invalid(tmp_path):
     """404 is returned if the path does not point to a file or directory.
     """
-    route = PathRoute(to=f"{tmp_path}/does-not-exist")
+    route = PathRoute(root=tmp_path, to="does-not-exist")
     resp = await route.get("does-not-exist", {})
     assert resp.status_code == 404
 
@@ -57,6 +59,9 @@ async def test_http_route(httpx_mock):
         url="http://example.com/simple/package/",
         data=b"<body>test content</body>",
     )
-    route = HTTPRoute(to="http://example.com/simple/{project}/")
+    route = HTTPRoute(
+        root=pathlib.Path("does-not-matter"),
+        to="http://example.com/simple/{project}/",
+    )
     resp = await route.get("package", {"project": "package"})
     assert resp.text == "<body>test content</body>"
