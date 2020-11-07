@@ -76,7 +76,7 @@ class PathRoute(Route):
 
 
 @dataclasses.dataclass()
-class URLRoute(Route):
+class HTTPRoute(Route):
     async def get(self, canonical_name: str, params: Params) -> Response:
         url = self.to.format(**params)
         async with httpx.AsyncClient() as client:

@@ -22,5 +22,5 @@ to = "https://pypi.org/{project}/"
 # Parameters to run the HTTP server. See documentation on uvicorn.run() for
 # available parameters. Dashes can be used in keys instead of underscores.
 [server]
-host = "127.0.1"
+host = "127.0.0.1"
 port = 8000

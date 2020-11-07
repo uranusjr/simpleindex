@@ -1,7 +1,7 @@
 import mousebender.simple
 import pytest
 
-from simpleindex.routes import PathRoute, URLRoute
+from simpleindex.routes import HTTPRoute, PathRoute
 
 
 @pytest.mark.asyncio
@@ -52,11 +52,11 @@ async def test_path_route_invalid(tmp_path):
 
 
 @pytest.mark.asyncio
-async def test_url_route(httpx_mock):
+async def test_http_route(httpx_mock):
     httpx_mock.add_response(
         url="http://example.com/simple/package/",
         data=b"<body>test content</body>",
     )
-    route = URLRoute(to="http://example.com/simple/{project}/")
+    route = HTTPRoute(to="http://example.com/simple/{project}/")
     resp = await route.get("package", {"project": "package"})
     assert resp.text == "<body>test content</body>"
