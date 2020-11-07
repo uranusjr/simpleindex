@@ -1,0 +1,15 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "simpleindex"
+author = "Tzu-ping Chung"
+author-email = "uranusjr@gmail.com"
+home-page = "https://github.com/uranusjr/simpleindex"
+classifiers = ["License :: OSI Approved :: MIT License"]
+requires = [
+    "pydantic",
+    "starlette",
+    "uvicorn",
+]
