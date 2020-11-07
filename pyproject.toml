@@ -9,7 +9,14 @@ author-email = "uranusjr@gmail.com"
 home-page = "https://github.com/uranusjr/simpleindex"
 classifiers = ["License :: OSI Approved :: MIT License"]
 requires = [
-    "pydantic",
-    "starlette",
-    "uvicorn",
+    "httpx",
+    "packaging-dists",
+]
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "mousebender",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-httpx",
 ]

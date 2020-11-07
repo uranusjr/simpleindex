@@ -3,28 +3,20 @@
 # Route "/my-first-package/" to a local directory. An HTML page is built
 # from the list of files.
 [routes.my-first-package]
-type = "path"
+source = "path"
 to = "./index/my-first-package"
 
 # Route "/my-second-package/" to an already-built HTML file. This file is
 # served as-is. Useful if you want to integrate this with a static index
 # generator.
 [routes.my-second-package]
-type = "path"
+source = "path"
 to = "./index/my-second-package/index.html"
-
-# Route "/my-third-package/" to a pip --find-links source (see pip
-# documentation for more information). The flag adds additional logic to make
-# sure only files related to my-third-package are served.
-[routes.my-third-package]
-type = "path"
-find-links = true
-to = "./other-packages/"
 
 # The path is passed directly to Starlette and can contain variables.
 # The captured path parameters can be used to format the value of "to".
 [routes."{project:str}"]
-type = "url"
+source = "http"
 to = "https://pypi.org/{project}/"
 
 # Parameters to run the HTTP server. See documentation on uvicorn.run() for
