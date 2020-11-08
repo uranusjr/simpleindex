@@ -55,7 +55,7 @@ $ python -m pip install -i http://127.0.0.1:8000 uranusjr-web
 
 `simpleindex` can be made aware of new route types via the `simpleindex.routes` [entry point] group.
 
-[entry points]: (https://setuptools.readthedocs.io/en/latest/userguide/entry_point.html#advertising-behavior).
+[entry point]: https://setuptools.readthedocs.io/en/latest/userguide/entry_point.html#advertising-behavior
 
 A new route type should subclass `simpleindex.routes.Route`, and implement behaviour to respond to HTTP requests.
 
