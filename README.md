@@ -50,3 +50,50 @@ Install projects:
 ```
 $ python -m pip install -i http://127.0.0.1:8000 uranusjr-web
 ```
+
+## Custom route types
+
+`simpleindex` can be made aware of new route types via the `simpleindex.routes` [entry point] group.
+
+[entry points]: (https://setuptools.readthedocs.io/en/latest/userguide/entry_point.html#advertising-behavior).
+
+A new route type should subclass `simpleindex.routes.Route`, and implement behaviour to respond to HTTP requests.
+
+The `Route` instance has two attributes:
+
+* `root`: A `pathlib.Path` pointing to the directory containing the configuration file current being served.
+* `to`: The `to` string in the configuratio block.
+
+For example, here's how you might want to implement Amazon S3 support:
+
+```python
+# simpleindex_s3.py
+
+from simpleindex.routes import Response, Route
+
+class AmazonS3Route(Route):
+    async def get_page(self, params: dict[str, Any]) -> Response:
+        # "params" is a mapping of parameters captured from the URL.
+        s3_bucket = self.to.format(**params)
+        list_of_files = _list_s3_files(s3_bucket)
+        html = _create_html_for_files(list_of_files)
+        return Response(status_code=200, content=html, media_type="text/html")
+```
+
+`Response` accepts an optional argument `headers` if you want to add additional response headers.
+
+Now add the class to the entry point group:
+
+```ini
+# setup.cfg
+
+[options.entry_points]
+simpleindex.routes =
+    s3 = simpleindex_s3:AmazonS3Route
+```
+
+You'll be able to use `source = "s3"` in the a `routes` block after installing the package:
+
+```
+$ pipx inject simpleindex simpleindex-s3
+```

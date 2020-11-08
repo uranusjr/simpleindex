@@ -22,7 +22,6 @@ Params = typing.Mapping[str, typing.Any]
 class Route:
     root: pathlib.Path
     to: str
-    serves_files: typing.ClassVar[bool] = False
 
     async def get_page(self, params: Params) -> Response:
         raise NotImplementedError()
@@ -66,7 +65,7 @@ class PathRoute(Route):
         if path.is_dir():
             html = _HTML.format(anchors="\n".join(_iter_anchors(path)))
             return Response(content=html, media_type="text/html")
-        return Response(status_code=404, content="not found")
+        return Response(status_code=404, content="Not Found")
 
     async def get_file(self, params: Params, filename: str) -> Response:
         path = self.root.joinpath(self.to.format(**params))

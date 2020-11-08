@@ -27,3 +27,7 @@ test = [
 
 [tool.flit.scripts]
 simpleindex = "simpleindex.__main__:main"
+
+[tool.flit.entrypoints."simpleindex.routes"]
+http = "simpleindex.routes:HTTPRoute"
+path = "simpleindex.routes:PathRoute"

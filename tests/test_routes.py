@@ -20,7 +20,7 @@ async def test_path_route_directory(tmp_path):
         directory.joinpath(name).touch()
 
     route = PathRoute(root=tmp_path, to="{project}")
-    resp = await route.get({"project": "my-package"})
+    resp = await route.get_page({"project": "my-package"})
     assert resp.status_code == 200
 
     links = mousebender.simple.parse_archive_links(resp.text)
@@ -35,7 +35,7 @@ async def test_path_route_file(tmp_path):
     html_file.write_text("<body>test content</body>")
 
     route = PathRoute(root=tmp_path, to="{project}.html")
-    resp = await route.get({"project": "project"})
+    resp = await route.get_page({"project": "project"})
     assert resp.status_code == 200
     assert resp.text == "<body>test content</body>"
 
@@ -45,7 +45,7 @@ async def test_path_route_invalid(tmp_path):
     """404 is returned if the path does not point to a file or directory.
     """
     route = PathRoute(root=tmp_path, to="does-not-exist")
-    resp = await route.get({})
+    resp = await route.get_page({})
     assert resp.status_code == 404
 
 
@@ -59,5 +59,5 @@ async def test_http_route(httpx_mock):
         root=pathlib.Path("does-not-matter"),
         to="http://example.com/simple/{project}/",
     )
-    resp = await route.get({"project": "package"})
+    resp = await route.get_page({"project": "package"})
     assert resp.text == "<body>test content</body>"

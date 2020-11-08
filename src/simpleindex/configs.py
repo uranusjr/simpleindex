@@ -1,31 +1,43 @@
 from __future__ import annotations
 
-import enum
+import dataclasses
+import functools
+import importlib.metadata
 import pathlib
 import typing
 
 import pydantic
 import toml
 
-from .routes import HTTPRoute, PathRoute, Route
+from .routes import Route
 
 
-class _RouteSource(enum.Enum):
-    http = HTTPRoute
-    path = PathRoute
+@functools.lru_cache(maxsize=None)
+def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
+    entry_points = importlib.metadata.entry_points()
+    return {
+        ep.name: ep.load()
+        for ep in entry_points.get("simpleindex.routes", [])
+    }
 
-    @classmethod
-    def __validate(cls, v: typing.Union[str, _RouteSource]) -> _RouteSource:
-        if isinstance(v, _RouteSource):
-            return v
-        try:
-            return cls.__members__[v]
-        except KeyError:
-            raise ValueError(v)
+
+def _validate_route_source(v: typing.Union[str, _RouteSource]) -> _RouteSource:
+    if isinstance(v, _RouteSource):
+        return v
+    try:
+        return _RouteSource(name=v, value=_get_route_source_choices()[v])
+    except KeyError:
+        raise ValueError(v)
+
+
+@dataclasses.dataclass()
+class _RouteSource:
+    name: str
+    value: typing.Type[Route]
 
     @classmethod
     def __get_validators__(cls):
-        yield cls.__validate
+        yield _validate_route_source
 
 
 class _Route(pydantic.BaseModel):
