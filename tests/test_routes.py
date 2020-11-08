@@ -12,10 +12,6 @@ async def test_path_route_directory(tmp_path):
     directory = tmp_path.joinpath("my-package")
     directory.mkdir()
 
-    # This should not match since it is from another project.
-    directory.joinpath("other_package-2.0-py2.py3-none-any.whl").touch()
-
-    # These should match.
     project_files = [
         "my-package-1.0.tar.gz",
         "my_package-1.0-py2.py3-none-any.whl",
@@ -24,7 +20,7 @@ async def test_path_route_directory(tmp_path):
         directory.joinpath(name).touch()
 
     route = PathRoute(root=tmp_path, to="{project}")
-    resp = await route.get("my-package", {"project": "my-package"})
+    resp = await route.get({"project": "my-package"})
     assert resp.status_code == 200
 
     links = mousebender.simple.parse_archive_links(resp.text)
@@ -39,7 +35,7 @@ async def test_path_route_file(tmp_path):
     html_file.write_text("<body>test content</body>")
 
     route = PathRoute(root=tmp_path, to="{project}.html")
-    resp = await route.get("project", {"project": "project"})
+    resp = await route.get({"project": "project"})
     assert resp.status_code == 200
     assert resp.text == "<body>test content</body>"
 
@@ -49,7 +45,7 @@ async def test_path_route_invalid(tmp_path):
     """404 is returned if the path does not point to a file or directory.
     """
     route = PathRoute(root=tmp_path, to="does-not-exist")
-    resp = await route.get("does-not-exist", {})
+    resp = await route.get({})
     assert resp.status_code == 404
 
 
@@ -63,5 +59,5 @@ async def test_http_route(httpx_mock):
         root=pathlib.Path("does-not-matter"),
         to="http://example.com/simple/{project}/",
     )
-    resp = await route.get("package", {"project": "package"})
+    resp = await route.get({"project": "package"})
     assert resp.text == "<body>test content</body>"

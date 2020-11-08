@@ -22,7 +22,7 @@ def test_configuration_parse(tmp_path):
         ),
         "{project:str}": _Route(
             source=_RouteSource.http,
-            to="https://pypi.org/{project}/",
+            to="https://pypi.org/simple/{project}/",
         ),
     }
 
@@ -35,8 +35,14 @@ def test_configuration_parse(tmp_path):
             PathRoute(root=pathlib.Path(), to="./index/my-first-package"),
         ),
         (
-            _Route(source=_RouteSource.http, to="https://pypi.org/{project}/"),
-            HTTPRoute(root=pathlib.Path(), to="https://pypi.org/{project}/"),
+            _Route(
+                source=_RouteSource.http,
+                to="https://pypi.org/simple/{project}/",
+            ),
+            HTTPRoute(
+                root=pathlib.Path(),
+                to="https://pypi.org/simple/{project}/",
+            ),
         ),
     ],
 )

@@ -17,7 +17,7 @@ to = "./index/my-second-package/index.html"
 # The captured path parameters can be used to format the value of "to".
 [routes."{project:str}"]
 source = "http"
-to = "https://pypi.org/{project}/"
+to = "https://pypi.org/simple/{project}/"
 
 # Parameters to run the HTTP server. See documentation on uvicorn.run() for
 # available parameters. Dashes can be used in keys instead of underscores.

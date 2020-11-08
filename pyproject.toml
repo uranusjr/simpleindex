@@ -11,6 +11,8 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 requires = [
     "httpx",
     "packaging-dists",
+    "starlette",
+    "uvicorn",
 ]
 
 [tool.flit.metadata.requires-extra]
