@@ -3,7 +3,7 @@ import pathlib
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import HTMLResponse
+from starlette.responses import Response
 from starlette.routing import Route
 from uvicorn import run as run_uvicorn
 
@@ -17,9 +17,11 @@ def _resolve_path(v: str) -> pathlib.Path:
 def _build_page_route(key: str, route: routes.Route) -> Route:
     async def view(request: Request):
         response = await route.get(request.path_params)
-        return HTMLResponse(
+        return Response(
             content=response.text,
             status_code=response.status_code,
+            media_type=response.media_type,
+            headers=response.headers,
         )
 
     return Route(f"/{key}/", view)

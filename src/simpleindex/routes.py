@@ -4,19 +4,15 @@ import dataclasses
 import pathlib
 import typing
 
-import httpx
 import packaging_dists
 
 
-class Response(typing.Protocol):
-    status_code: int
-    text: str
-
-
 @dataclasses.dataclass()
-class LocalResponse(Response):
-    status_code: int
-    text: str
+class Response:
+    text: str = ""
+    status_code: int = 200
+    media_type: str = "text/plain"
+    headers: typing.Optional[typing.Mapping[str, str]] = None
 
 
 @dataclasses.dataclass()
@@ -60,17 +56,15 @@ class PathRoute(Route):
     async def get(self, params: typing.Mapping[str, typing.Any]) -> Response:
         path = self.root.joinpath(self.to.format(**params))
         if path.is_file():
-            return LocalResponse(status_code=200, text=path.read_text())
+            return Response(text=path.read_text(), media_type="text/html")
         if path.is_dir():
             html = _HTML.format(anchors="\n".join(_iter_anchors(path)))
-            return LocalResponse(status_code=200, text=html)
-        return LocalResponse(status_code=404, text="no such file or directory")
+            return Response(text=html, media_type="text/html")
+        return Response(status_code=404, text="not found")
 
 
 @dataclasses.dataclass()
 class HTTPRoute(Route):
     async def get(self, params: typing.Mapping[str, typing.Any]) -> Response:
         url = self.to.format(**params)
-        async with httpx.AsyncClient() as client:
-            resp = await client.get(url)
-        return resp
+        return Response(status_code=302, headers={"Location": url})

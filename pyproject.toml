@@ -9,7 +9,6 @@ author-email = "uranusjr@gmail.com"
 home-page = "https://github.com/uranusjr/simpleindex"
 classifiers = ["License :: OSI Approved :: MIT License"]
 requires = [
-    "httpx",
     "packaging-dists",
     "starlette",
     "uvicorn",
