@@ -1,4 +1,4 @@
-# Create a PEP 503 Simple Repository index by declaring routing rules.
+# PEP 503 Simple Repository from routing rules
 
 Generate distributions:
 
