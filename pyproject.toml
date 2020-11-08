@@ -24,3 +24,6 @@ test = [
     "pytest-asyncio",
     "pytest-httpx",
 ]
+
+[tool.flit.scripts]
+simpleindex = "simpleindex.__main__:main"

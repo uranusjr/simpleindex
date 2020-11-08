@@ -1,5 +1,11 @@
 # PEP 503 Simple Repository from routing rules
 
+Install simpleindex ([pipx](https://pipxproject.github.io/pipx/) is recommended):
+
+```
+$ pipx install simpleindex
+```
+
 Generate distributions:
 
 ```
@@ -36,8 +42,7 @@ port = 8000
 Run the server:
 
 ```
-$ python -m pip install simpleindex
-$ python -m simpleindex /path/to/configuration.toml
+$ simpleindex /path/to/configuration.toml
 ```
 
 Install projects:
