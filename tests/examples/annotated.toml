@@ -15,7 +15,7 @@ to = "./index/my-second-package/index.html"
 
 # The path is passed directly to Starlette and can contain variables.
 # The captured path parameters can be used to format the value of "to".
-[routes."{project:str}"]
+[routes."{project}"]
 source = "http"
 to = "https://pypi.org/simple/{project}/"
 

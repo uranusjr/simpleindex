@@ -20,7 +20,7 @@ def test_configuration_parse(tmp_path):
             source=_RouteSource.path,
             to="./index/my-second-package/index.html",
         ),
-        "{project:str}": _Route(
+        "{project}": _Route(
             source=_RouteSource.http,
             to="https://pypi.org/simple/{project}/",
         ),
