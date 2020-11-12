@@ -12,10 +12,6 @@ from uvicorn import run as run_uvicorn
 from . import configs, routes
 
 
-def _resolve_path(v: str) -> pathlib.Path:
-    return pathlib.Path(v).resolve()
-
-
 def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     async def page(request: Request):
         response = await route.get_page(request.path_params)
@@ -48,7 +44,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config",
-        type=_resolve_path,
+        type=pathlib.Path,
         help="Path to configuration file",
     )
     ns = parser.parse_args()
