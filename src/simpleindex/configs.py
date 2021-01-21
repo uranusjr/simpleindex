@@ -86,9 +86,8 @@ class Configuration(pydantic.BaseModel):
     @classmethod
     def parse_arg(cls, arg: str) -> typing.Tuple[pathlib.Path, Configuration]:
         loc, _, prefix = arg.partition("::")
-        try:
-            path = pathlib.Path(loc).resolve()
-        except FileNotFoundError:
+        path = pathlib.Path(loc)
+        if not path.is_file():
             raise ConfigurationFileNotFound(loc)
         configuration = cls.parse(path, prefix)
         return path, configuration
