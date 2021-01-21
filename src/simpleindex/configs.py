@@ -12,6 +12,25 @@ import toml
 from .routes import Route
 
 
+class ConfigurationFileNotFound(ValueError):
+    def __init__(self, loc: str) -> None:
+        super().__init__(loc)
+        self.loc = loc
+
+    def __str__(self) -> str:
+        return f"Configuration file not found at {self.loc}"
+
+
+class ConfigurationKeyNotFound(ValueError):
+    def __init__(self, path: pathlib.Path, key: str) -> None:
+        super().__init__(path, key)
+        self.path = path
+        self.key = key
+
+    def __str__(self) -> str:
+        return f"Key path {self.key} not found in configuration at {self.path}"
+
+
 @functools.lru_cache(maxsize=None)
 def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
     entry_points = importlib.metadata.entry_points()
@@ -52,8 +71,24 @@ class Configuration(pydantic.BaseModel):
     routes: typing.Mapping[str, _Route]
     server: typing.Mapping[str, typing.Any]
 
+    @classmethod
+    def parse(cls, path: pathlib.Path, prefix: str) -> Configuration:
+        with path.open(encoding="utf-8") as f:
+            data = toml.load(f)
+        try:
+            if prefix:
+                for key in prefix.split("."):
+                    data = data[key]
+        except KeyError:
+            raise ConfigurationKeyNotFound(path, prefix)
+        return Configuration(**data)
 
-def parse(path: pathlib.Path) -> Configuration:
-    with path.open(encoding="utf-8") as f:
-        data = toml.load(f)
-    return Configuration(**data)
+    @classmethod
+    def parse_arg(cls, arg: str) -> typing.Tuple[pathlib.Path, Configuration]:
+        loc, _, prefix = arg.partition("::")
+        try:
+            path = pathlib.Path(loc).resolve()
+        except FileNotFoundError:
+            raise ConfigurationFileNotFound(loc)
+        configuration = cls.parse(path, prefix)
+        return path, configuration

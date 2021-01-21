@@ -1,6 +1,5 @@
 import argparse
 import itertools
-import pathlib
 import typing
 
 from starlette.applications import Starlette
@@ -10,10 +9,6 @@ from starlette.routing import Route
 from uvicorn import run as run_uvicorn
 
 from . import configs, routes
-
-
-def _resolve_path(v: str) -> pathlib.Path:
-    return pathlib.Path(v).resolve()
 
 
 def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
@@ -48,15 +43,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config",
-        type=_resolve_path,
+        type=configs.Configuration.parse_arg,
         help="Path to configuration file",
     )
     ns = parser.parse_args()
 
-    configuration = configs.parse(ns.config)
+    config_path, configuration = ns.config
 
     routes = itertools.chain.from_iterable(
-        _build_routes(key, route.derive(ns.config.parent))
+        _build_routes(key, route.derive(config_path.parent))
         for key, route in configuration.routes.items()
     )
     app = Starlette(routes=list(routes))
