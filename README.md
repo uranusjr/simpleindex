@@ -2,7 +2,7 @@
 
 simpleindex helps set up a PEP 503 "proxy server" that re-routes requests to
 each project to its "real" repository source, to prevent multiple indexes being
-mixed together, creating [dependency confusion] vulnarabilities.
+mixed together, creating [dependency confusion] vulnerabilities.
 
 [dependency confusion]: https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610
 
