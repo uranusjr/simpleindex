@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import pathlib
 import typing
 
-import packaging_dists
+import packaging.utils
 
 
 @dataclasses.dataclass()
@@ -43,6 +44,16 @@ _HTML = """
 """
 
 
+def _is_valid_dist_filename(filename: str) -> bool:
+    with contextlib.suppress(packaging.utils.InvalidWheelFilename):
+        packaging.utils.parse_wheel_filename(filename)
+        return True
+    with contextlib.suppress(packaging.utils.InvalidSdistFilename):
+        packaging.utils.parse_sdist_filename(filename)
+        return True
+    return False
+
+
 def _iter_anchors(root: pathlib.Path) -> typing.Iterator[str]:
     """Create anchor tags from directory listing.
 
@@ -50,9 +61,7 @@ def _iter_anchors(root: pathlib.Path) -> typing.Iterator[str]:
     look like a distribution file are ignored.
     """
     for path in root.iterdir():
-        try:
-            packaging_dists.parse(path.name)
-        except packaging_dists.InvalidDistribution:
+        if not _is_valid_dist_filename(path.name):
             continue
         yield f'<a href="./{path.name}">{path.name}</a>'
 
@@ -74,9 +83,7 @@ class PathRoute(Route):
         path = path.joinpath(filename)
         if not path.is_file():
             return await super().get_file(params, filename)
-        try:
-            packaging_dists.parse(filename)
-        except packaging_dists.InvalidDistribution:
+        if not _is_valid_dist_filename(path.name):
             return await super().get_file(params, filename)
         if filename.endswith(".tar.gz"):
             media_type = "application/x-tar"

@@ -10,7 +10,7 @@ home-page = "https://github.com/uranusjr/simpleindex"
 classifiers = ["License :: OSI Approved :: MIT License"]
 requires-python = ">=3.8"
 requires = [
-    "packaging-dists",
+    "packaging >=20.9",
     "pydantic",
     "starlette",
     "toml",
