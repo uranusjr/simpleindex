@@ -10,7 +10,8 @@ import packaging.utils
 
 @dataclasses.dataclass()
 class Response:
-    content: typing.Union[bytes, str] = b""
+    content: typing.Union[bytes, str, typing.AsyncIterator] = b""
+    streaming: bool = False
     status_code: int = 200
     media_type: str = "text/plain"
     headers: typing.Optional[typing.Mapping[str, str]] = None

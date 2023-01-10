@@ -4,7 +4,7 @@ import typing
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import Response, StreamingResponse
 from starlette.routing import Route
 from uvicorn import run as run_uvicorn
 
@@ -25,12 +25,20 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
         params = request.path_params
         filename = params.pop(filename_param)
         response = await route.get_file(params, filename)
-        return Response(
-            content=response.content,
-            status_code=response.status_code,
-            media_type=response.media_type,
-            headers=response.headers,
-        )
+        if response.streaming:
+            return StreamingResponse(
+                content=response.content,
+                status_code=response.status_code,
+                media_type=response.media_type,
+                headers=response.headers,
+            )
+        else:
+            return Response(
+                content=response.content,
+                status_code=response.status_code,
+                media_type=response.media_type,
+                headers=response.headers,
+            )
 
     filename_param = "__simpleindex_match_filename__"
     return [
