@@ -7,16 +7,24 @@ import typing
 
 import packaging.utils
 
+Content = typing.Union[bytes, str]
+SyncContentStream = typing.Iterable[Content]
+AsyncContentStream = typing.AsyncIterable[Content]
+ContentStream = typing.Union[AsyncContentStream, SyncContentStream]
+Params = typing.Mapping[str, typing.Any]
+
 
 @dataclasses.dataclass()
 class Response:
-    content: typing.Union[bytes, str] = b""
+    content: Content = b""
     status_code: int = 200
     media_type: str = "text/plain"
     headers: typing.Optional[typing.Mapping[str, str]] = None
 
 
-Params = typing.Mapping[str, typing.Any]
+@dataclasses.dataclass()
+class StreamingResponse(Response):
+    content: ContentStream = []
 
 
 @dataclasses.dataclass()
