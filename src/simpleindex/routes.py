@@ -24,7 +24,7 @@ class Response:
 
 @dataclasses.dataclass()
 class StreamingResponse(Response):
-    content: ContentStream = []
+    content: ContentStream = tuple()
 
 
 @dataclasses.dataclass()

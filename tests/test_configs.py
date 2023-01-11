@@ -3,13 +3,13 @@ import pathlib
 
 import pytest
 
-from simpleindex.configs import _Route, parse
+from simpleindex.configs import Configuration, _Route
 from simpleindex.routes import HTTPRoute, PathRoute
 
 
 def test_configuration_parse(tmp_path):
     with importlib.resources.path("examples", "annotated.toml") as path:
-        conf = parse(path)
+        conf = Configuration.parse(path, prefix=None)
     assert conf.server == {"host": "127.0.0.1", "port": 8000}
     assert conf.routes == {
         "my-first-package": _Route(

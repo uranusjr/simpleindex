@@ -19,7 +19,7 @@ requires = [
 
 [tool.flit.metadata.requires-extra]
 test = [
-    "mousebender",
+    "mousebender==v2.0.0",
     "pytest",
     "pytest-asyncio",
     "pytest-httpx",
