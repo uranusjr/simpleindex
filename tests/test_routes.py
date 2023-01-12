@@ -76,7 +76,6 @@ async def test_path_route_invalid_files(tmp_path):
     assert [link.url for link in links] == [f"./{n}" for n in expected_project_files]
 
 
-
 @pytest.mark.asyncio
 async def test_http_route(httpx_mock):
     httpx_mock.add_response(
