@@ -6,12 +6,15 @@ import pathlib
 import typing
 
 import packaging.utils
+from starlette.responses import Response as StarletteResponse
+from starlette.responses import StreamingResponse as StarletteStreamingResponse
 
 Content = typing.Union[bytes, str]
 SyncContentStream = typing.Iterable[Content]
 AsyncContentStream = typing.AsyncIterable[Content]
 ContentStream = typing.Union[AsyncContentStream, SyncContentStream]
 Params = typing.Mapping[str, typing.Any]
+Headers = typing.Mapping[str, str]
 
 
 @dataclasses.dataclass()
@@ -19,12 +22,24 @@ class Response:
     content: Content = b""
     status_code: int = 200
     media_type: str = "text/plain"
-    headers: typing.Optional[typing.Mapping[str, str]] = None
+    headers: typing.Optional[Headers] = None
+
+    _http_response_class = StarletteResponse
+
+    def to_http_response(self) -> StarletteResponse:
+        return self._http_response_class(
+            content=self.content,
+            status_code=self.status_code,
+            media_type=self.media_type,
+            headers=self.headers,
+        )
 
 
 @dataclasses.dataclass()
 class StreamingResponse(Response):
     content: ContentStream = ()
+    
+    _http_response_class = StarletteStreamingResponse
 
 
 @dataclasses.dataclass()

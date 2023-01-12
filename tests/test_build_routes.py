@@ -2,7 +2,6 @@ import pytest
 from starlette.responses import Response as StarletteResponse
 from starlette.responses import StreamingResponse as StarletteStreamingResponse
 
-from simpleindex.__main__ import _to_http_response
 from simpleindex.routes import Response, StreamingResponse
 
 
@@ -17,7 +16,7 @@ def test_response_conversion():
     response = Response(
         content=content, status_code=status_code, media_type=media_type, headers=headers
     )
-    starlette_response = _to_http_response(response)
+    starlette_response = response.to_http_response()
 
     assert isinstance(starlette_response, StarletteResponse)
 
@@ -50,7 +49,7 @@ async def test_streaming_response_conversion():
         media_type=media_type,
         headers=headers,
     )
-    starlette_response = _to_http_response(response)
+    starlette_response = response.to_http_response()
 
     assert isinstance(starlette_response, StarletteStreamingResponse)
 

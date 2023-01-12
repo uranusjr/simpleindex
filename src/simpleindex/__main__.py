@@ -4,45 +4,22 @@ import typing
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import Response, StreamingResponse
 from starlette.routing import Route
 from uvicorn import run as run_uvicorn
 
 from . import configs, routes
 
 
-def _to_http_response(
-    response: typing.Union[routes.Response, routes.StreamingResponse]
-):
-    # The order is crutial due the inheritance between *Response classes
-    if isinstance(response, routes.StreamingResponse):
-        return StreamingResponse(
-            content=response.content,
-            status_code=response.status_code,
-            media_type=response.media_type,
-            headers=response.headers,
-        )
-    elif isinstance(response, routes.Response):
-        return Response(
-            content=response.content,
-            status_code=response.status_code,
-            media_type=response.media_type,
-            headers=response.headers,
-        )
-    else:
-        raise TypeError(f"Invalid type {type(response)}")
-
-
 def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     async def page(request: Request):
         response = await route.get_page(request.path_params)
-        return _to_http_response(response)
+        return response.to_http_response()
 
     async def dist(request: Request):
         params = request.path_params
         filename = params.pop(filename_param)
         response = await route.get_file(params, filename)
-        return _to_http_response(response)
+        response.to_http_response()
 
     filename_param = "__simpleindex_match_filename__"
     return [
