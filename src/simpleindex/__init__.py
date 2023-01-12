@@ -2,3 +2,5 @@
 """
 
 __version__ = "0.4.0"
+
+from .__main__ import run

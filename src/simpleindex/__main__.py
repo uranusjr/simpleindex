@@ -1,5 +1,6 @@
 import argparse
 import itertools
+import sys
 import typing
 
 from starlette.applications import Starlette
@@ -39,14 +40,15 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     ]
 
 
-def main():
+def run(args: typing.List[str]):
+    print(args)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config",
         type=configs.Configuration.parse_arg,
         help="Path to configuration file",
     )
-    ns = parser.parse_args()
+    ns = parser.parse_args(args)
 
     config_path, configuration = ns.config
 
@@ -61,4 +63,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run(sys.argv[1:])
