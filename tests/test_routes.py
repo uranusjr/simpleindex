@@ -71,9 +71,9 @@ async def test_path_route_invalid_files(tmp_path):
     resp = await route.get_page({"project": "my-package"})
     assert resp.status_code == 200
 
-    links = mousebender.simple.parse_archive_links(resp.content)
-    assert [link.filename for link in links] == expected_project_files
-    assert [link.url for link in links] == [f"./{n}" for n in expected_project_files]
+    links = mousebender.simple.from_project_details_html(resp.content, "")
+    assert [file["filename"] for file in links["files"]] == expected_project_files
+    assert [file["url"] for file in links["files"]] == [f"./{n}" for n in expected_project_files]
 
 
 @pytest.mark.asyncio
