@@ -19,7 +19,7 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
         params = request.path_params
         filename = params.pop(filename_param)
         response = await route.get_file(params, filename)
-        response.to_http_response()
+        return response.to_http_response()
 
     filename_param = "__simpleindex_match_filename__"
     return [
