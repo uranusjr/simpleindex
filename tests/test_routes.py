@@ -50,6 +50,33 @@ async def test_path_route_invalid(tmp_path):
 
 
 @pytest.mark.asyncio
+async def test_path_route_invalid_files(tmp_path):
+    """An HTML document for a local directory ignores invalid files."""
+    directory = tmp_path.joinpath("my-package")
+    directory.mkdir()
+
+    expected_project_files = [
+        "my-package-1.0.tar.gz",
+        "my_package-1.0-py2.py3-none-any.whl",
+    ]
+    project_files = [
+        *expected_project_files,
+        "my-package-invalid_version.tar.gz",
+        "my_package-..01-py2.py3-none-any.whl",
+    ]
+    for name in project_files:
+        directory.joinpath(name).touch()
+
+    route = PathRoute(root=tmp_path, to="{project}")
+    resp = await route.get_page({"project": "my-package"})
+    assert resp.status_code == 200
+
+    links = mousebender.simple.from_project_details_html(resp.content, "")
+    assert [file["filename"] for file in links["files"]] == expected_project_files
+    assert [file["url"] for file in links["files"]] == [f"./{n}" for n in expected_project_files]
+
+
+@pytest.mark.asyncio
 async def test_http_route(httpx_mock):
     httpx_mock.add_response(
         url="http://example.com/simple/package/",
