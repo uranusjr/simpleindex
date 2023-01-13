@@ -34,10 +34,7 @@ class ConfigurationKeyNotFound(ValueError):
 @functools.lru_cache(maxsize=None)
 def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
     entry_points = importlib.metadata.entry_points()
-    return {
-        ep.name: ep.load()
-        for ep in entry_points.get("simpleindex.routes", [])
-    }
+    return {ep.name: ep.load() for ep in entry_points.get("simpleindex.routes", [])}
 
 
 def _validate_route_source(v: typing.Union[str, _RouteSource]) -> _RouteSource:

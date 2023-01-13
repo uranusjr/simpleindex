@@ -38,7 +38,7 @@ class Response:
 @dataclasses.dataclass()
 class StreamingResponse(Response):
     content: ContentStream = ()
-    
+
     _http_response_class = StarletteStreamingResponse
 
 
