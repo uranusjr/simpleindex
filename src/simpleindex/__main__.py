@@ -39,14 +39,19 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     ]
 
 
-def main():
+def run(args: typing.Optional[typing.List[str]]) -> None:
+    """Run the index server.
+
+    :param args: CLI arguments to pass to the argument parser. If ``None`` is
+        passed, ``sys.argv[1:]`` is used (the default argparse behavior).
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config",
         type=configs.Configuration.parse_arg,
         help="Path to configuration file",
     )
-    ns = parser.parse_args()
+    ns = parser.parse_args(args)
 
     config_path, configuration = ns.config
 
@@ -61,4 +66,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run(None)
