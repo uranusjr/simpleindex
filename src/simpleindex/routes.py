@@ -68,10 +68,16 @@ _HTML = """
 
 
 def _is_valid_dist_filename(filename: str) -> bool:
-    with contextlib.suppress(packaging.utils.InvalidWheelFilename):
+    with contextlib.suppress(
+        packaging.utils.InvalidWheelFilename,
+        packaging.utils.InvalidVersion,
+    ):
         packaging.utils.parse_wheel_filename(filename)
         return True
-    with contextlib.suppress(packaging.utils.InvalidSdistFilename):
+    with contextlib.suppress(
+        packaging.utils.InvalidSdistFilename,
+        packaging.utils.InvalidVersion,
+    ):
         packaging.utils.parse_sdist_filename(filename)
         return True
     return False
