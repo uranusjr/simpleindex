@@ -1,6 +1,5 @@
 import argparse
 import itertools
-import sys
 import typing
 
 from starlette.applications import Starlette
@@ -40,8 +39,12 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     ]
 
 
-def run(args: typing.List[str]):
-    print(args)
+def run(args: typing.Optional[typing.List[str]]) -> None:
+    """Run the index server.
+
+    :param args: CLI arguments to pass to the argument parser. If ``None`` is
+        passed, ``sys.argv[1:]`` is used (the default argparse behavior).
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "config",
@@ -63,4 +66,4 @@ def run(args: typing.List[str]):
 
 
 if __name__ == "__main__":
-    run(sys.argv[1:])
+    run(None)
