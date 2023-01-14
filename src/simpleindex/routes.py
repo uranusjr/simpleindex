@@ -6,14 +6,7 @@ import pathlib
 import typing
 
 import packaging.utils
-
-
-@dataclasses.dataclass()
-class Response:
-    content: typing.Union[bytes, str] = b""
-    status_code: int = 200
-    media_type: str = "text/plain"
-    headers: typing.Optional[typing.Mapping[str, str]] = None
+from starlette.responses import Response
 
 
 Params = typing.Mapping[str, typing.Any]
