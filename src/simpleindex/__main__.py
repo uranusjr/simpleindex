@@ -4,7 +4,6 @@ import typing
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import Response
 from starlette.routing import Route
 from uvicorn import run as run_uvicorn
 
@@ -14,23 +13,13 @@ from . import configs, routes
 def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     async def page(request: Request):
         response = await route.get_page(request.path_params)
-        return Response(
-            content=response.content,
-            status_code=response.status_code,
-            media_type=response.media_type,
-            headers=response.headers,
-        )
+        return response.to_http_response()
 
     async def dist(request: Request):
         params = request.path_params
         filename = params.pop(filename_param)
         response = await route.get_file(params, filename)
-        return Response(
-            content=response.content,
-            status_code=response.status_code,
-            media_type=response.media_type,
-            headers=response.headers,
-        )
+        return response.to_http_response()
 
     filename_param = "__simpleindex_match_filename__"
     return [
