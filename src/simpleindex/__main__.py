@@ -28,7 +28,7 @@ def _build_routes(key: str, route: routes.Route) -> typing.List[Route]:
     ]
 
 
-def run(args: typing.Optional[typing.List[str]]) -> None:
+def run(args: typing.Optional[typing.List[str]] = None) -> None:
     """Run the index server.
 
     :param args: CLI arguments to pass to the argument parser. If ``None`` is
@@ -55,4 +55,4 @@ def run(args: typing.Optional[typing.List[str]]) -> None:
 
 
 if __name__ == "__main__":
-    run(None)
+    run()
