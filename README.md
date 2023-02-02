@@ -62,7 +62,7 @@ A new route type should subclass `simpleindex.routes.Route`, and implement behav
 The `Route` instance has two attributes:
 
 * `root`: A `pathlib.Path` pointing to the directory containing the configuration file current being served.
-* `to`: The `to` string in the configuratio block.
+* `to`: The `to` string in the configuration block.
 
 For example, here's how you might want to implement Amazon S3 support:
 
