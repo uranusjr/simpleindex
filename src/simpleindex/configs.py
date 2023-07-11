@@ -7,6 +7,7 @@ import pathlib
 import typing
 
 import pydantic
+import pydantic_core.core_schema as core_schema
 import toml
 
 from .routes import Route
@@ -37,7 +38,10 @@ def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
     return {ep.name: ep.load() for ep in entry_points.get("simpleindex.routes", [])}
 
 
-def _validate_route_source(v: typing.Union[str, _RouteSource]) -> _RouteSource:
+def _validate_route_source(
+    v: typing.Union[str, _RouteSource],
+    _: typing.Optional[core_schema.ValidationInfo] = None,
+) -> _RouteSource:
     if isinstance(v, _RouteSource):
         return v
     try:
@@ -52,8 +56,12 @@ class _RouteSource:
     value: typing.Type[Route]
 
     @classmethod
-    def __get_validators__(cls):
+    def __get_validators__(cls):  # Pydantic 1.x compatibility.
         yield _validate_route_source
+
+    @classmethod
+    def __get_pydantic_core_schema__(cls, source, handler):  # Pydantic 2.
+        return core_schema.general_plain_validator_function(_validate_route_source)
 
 
 class _Route(pydantic.BaseModel):
