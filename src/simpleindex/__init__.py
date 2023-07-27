@@ -7,7 +7,7 @@ __all__ = [
     "run",
 ]
 
-__version__ = "0.6.0"
+__version__ = "0.6.1"
 
 
 def run(args: typing.Optional[typing.List[str]] = None) -> None:
