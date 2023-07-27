@@ -7,7 +7,6 @@ import pathlib
 import typing
 
 import pydantic
-import pydantic_core.core_schema as core_schema
 import toml
 
 from .routes import Route
@@ -61,6 +60,8 @@ class _RouteSource:
 
     @classmethod
     def __get_pydantic_core_schema__(cls, source, handler):  # Pydantic 2.
+        import pydantic_core.core_schema as core_schema
+
         return core_schema.general_plain_validator_function(_validate_route_source)
 
 
