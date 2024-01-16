@@ -4,6 +4,7 @@ import dataclasses
 import functools
 import importlib.metadata
 import pathlib
+import sys
 import typing
 
 import pydantic
@@ -34,7 +35,10 @@ class ConfigurationKeyNotFound(ValueError):
 @functools.lru_cache(maxsize=None)
 def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
     entry_points = importlib.metadata.entry_points()
-    return {ep.name: ep.load() for ep in entry_points.get("simpleindex.routes", [])}
+    if sys.version_info < (3, 10):
+        return {ep.name: ep.load() for ep in entry_points.get("simpleindex.routes", [])}
+    else:
+        return {ep.name: ep.load() for ep in entry_points.select(group="simpleindex.routes")}
 
 
 def _validate_route_source(
