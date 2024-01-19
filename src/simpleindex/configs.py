@@ -35,10 +35,13 @@ class ConfigurationKeyNotFound(ValueError):
 @functools.lru_cache(maxsize=None)
 def _get_route_source_choices() -> typing.Dict[str, typing.Type[Route]]:
     entry_points = importlib.metadata.entry_points()
-    if sys.version_info < (3, 10):
-        return {ep.name: ep.load() for ep in entry_points.get("simpleindex.routes", [])}
+    try:
+        select = entry_points.select
+    except AttributeError:
+        routes = entry_points.get("simpleindex.routes", [])
     else:
-        return {ep.name: ep.load() for ep in entry_points.select(group="simpleindex.routes")}
+        routes = select(group="simpleindex.routes")
+    return {ep.name: ep.load() for ep in routes}
 
 
 def _validate_route_source(
