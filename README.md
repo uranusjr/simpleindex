@@ -1,10 +1,28 @@
 # PEP 503 Simple Repository from routing rules
 
-Install simpleindex ([pipx](https://pipxproject.github.io/pipx/) is recommended):
+simpleindex helps set up a PEP 503 "proxy server" that re-routes requests to
+each project to its "real" repository source, to prevent multiple indexes being
+mixed together, creating [dependency confusion] vulnerabilities.
+
+[dependency confusion]: https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610
+
+
+## Installation
+
+Install simpleindex with [pipx](https://pypa.github.io/pipx/):
 
 ```
 $ pipx install simpleindex
 ```
+
+Or use pip to install into an existing virtual environment:
+
+```
+$ pip install simpleindex
+```
+
+
+## Basic configuration
 
 Generate distributions:
 
@@ -50,6 +68,7 @@ Install projects:
 ```
 $ python -m pip install -i http://127.0.0.1:8000 uranusjr-web
 ```
+
 
 ## Custom route types
 
